@@ -3,7 +3,13 @@ from typing import List
 from sqlalchemy.orm import Session
 from db.session import get_db
 from schemas.blog import CreateBlog, ShowBlog, UpdateBlog
-from db.repository.blog import create_new_blog, retrieve_blog, list_all_active_blogs, update_blog_by_id
+from db.repository.blog import (
+    create_new_blog,
+    retrieve_blog,
+    list_all_active_blogs,
+    update_blog_by_id,
+    delete_blog_by_id,
+)
 
 router = APIRouter()
 
@@ -40,3 +46,13 @@ def update_a_blog(id: int, blog: UpdateBlog, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
         )
     return blog
+
+
+@router.delete("/{id}")
+def delete_a_blog(id: int, db: Session = Depends(get_db)):
+    message = delete_blog_by_id(id=id, db=db, author_id=1)
+    if message.get("error"):
+        raise HTTPException(
+            detail=message.get("error"), status_code=status.HTTP_400_BAD_REQUEST
+        )
+    return {"message": message.get("message")}
