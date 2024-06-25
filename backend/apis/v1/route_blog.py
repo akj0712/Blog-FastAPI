@@ -17,8 +17,12 @@ router = APIRouter()
 
 
 @router.post("/", response_model=ShowBlog, status_code=status.HTTP_201_CREATED)
-def create_blog(blog: CreateBlog, db: Session = Depends(get_db)):
-    blog = create_new_blog(blog=blog, db=db, author_id=1)
+def create_blog(
+    blog: CreateBlog,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    blog = create_new_blog(blog=blog, db=db, author_id=current_user.id)
     return blog
 
 

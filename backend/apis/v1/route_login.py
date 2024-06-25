@@ -36,7 +36,7 @@ def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
 
 def get_current_user(
@@ -55,14 +55,14 @@ def get_current_user(
         if email is None:
             print("-> Email")
             raise credentails_exception
-        
+
     except JWTError:
         print("-> JWT")
         raise credentails_exception
-    
+
     user = get_user_by_email(email=email, db=db)
     if user is None:
         print("-> User")
         raise credentails_exception
-    
+
     return user
